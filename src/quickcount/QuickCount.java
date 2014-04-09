@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class QuickCount {
 	private static final QuickCount qc = new QuickCount ();
-	
+
 	public Integer	user_id			= 0;
 	public Integer	dapil_id		= 0;
 	public Integer	kecamatan_id	= 0;
@@ -30,7 +30,7 @@ public class QuickCount {
 	public String	kecamatan_nama	= "";
 	public String	kelurahan_nama	= "";
 	public String	kode_saksi		= "";
-	
+
 	public MainWindow		win_main	= null;
 	public WinSaksi			win_saksi	= null;
 	public WinHasilPemilu	win_hasil	= null;
@@ -48,7 +48,7 @@ public class QuickCount {
 
 		qc.win_main.setVisible(true);
 	}
-	
+
 	public static QuickCount getInstance ()
 	{
 		return QuickCount.qc;
@@ -61,7 +61,7 @@ public class QuickCount {
 	) {
 		DatabaseManager dbm = DatabaseManager.getInstance();
 		String tname = "";
-		
+
 		if (type == 1) {
 			tname = "hasil_dpr";
 		} else if (type == 2) {
@@ -73,14 +73,14 @@ public class QuickCount {
 
 		try {
 			dbm._ps.setInt (1, caleg_id);
-			
+
 			dbm._ps.executeUpdate();
-		
-			dbm.close ();	
+
+			dbm.close ();
 		} catch (SQLException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
+
 		// insert
 		dbm.prepare (
 					" insert into "+ tname +" ("
@@ -101,13 +101,13 @@ public class QuickCount {
 			dbm._ps.setInt (i++, caleg_id);
 			dbm._ps.setInt (i++, partai_id);
 			dbm._ps.setInt (i++, hasil);
-			
+
 			dbm._ps.executeUpdate();
-		
+
 			dbm.close ();
 		} catch (SQLException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
-		}		
+		}
 	}
 
 	void exportHasilPemilu() {
@@ -119,13 +119,13 @@ public class QuickCount {
 		} catch (IOException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
-		if (os.startsWith("Windows")) {
-			path = "C:/quickcount/";
-		}
-		
+
+//		if (os.startsWith("Windows")) {
+//			path = "C:/quickcount/";
+//		}
+
 		DatabaseManager dbm = DatabaseManager.getInstance();
-		
+
 		exportHasil (dbm, path, "hasil_dpr", "DPR");
 		exportHasil (dbm, path, "hasil_dprd", "DPRD");
 		exportRekap (dbm, path, "rekap_suara_dpr", "DPR");
@@ -154,9 +154,9 @@ public class QuickCount {
 		} catch (IOException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
+
 		bw = new BufferedWriter(fw);
-		
+
 		dbm.prepare (
 			" select	dapil_id"
 		+	" ,			kecamatan_id"
@@ -168,9 +168,9 @@ public class QuickCount {
 		+	" ,			hasil"
 		+	" from "+ table
 		);
-		
+
 		dbm.executePrepare();
-		
+
 		try {
 			while (dbm._rs.next()) {
 				bw.write (
@@ -186,7 +186,9 @@ public class QuickCount {
 			}
 
 			bw.close ();
-		} catch (SQLException | IOException ex) {
+		} catch (SQLException ex) {
+			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
@@ -215,9 +217,9 @@ public class QuickCount {
 		} catch (IOException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
+
 		bw = new BufferedWriter(fw);
-		
+
 		dbm.prepare (
 			" select	dapil_id"
 		+	" ,			kecamatan_id"
@@ -231,9 +233,9 @@ public class QuickCount {
 		+	" ,			tidak_sah"
 		+	" from "+ table
 		);
-		
+
 		dbm.executePrepare();
-		
+
 		try {
 			while (dbm._rs.next()) {
 				bw.write (
@@ -251,7 +253,9 @@ public class QuickCount {
 			}
 
 			bw.close ();
-		} catch (SQLException | IOException ex) {
+		} catch (SQLException ex) {
+			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
