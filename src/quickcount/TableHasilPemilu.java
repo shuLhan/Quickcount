@@ -28,7 +28,7 @@ public class TableHasilPemilu extends javax.swing.JTable {
 	private final boolean[] canEdit;
 	private final int[]		minWidth;
 	private final int[]		maxWidth;
-	
+
 	private final DefaultTableModel model;
 
 	public TableHasilPemilu (ResultSet rs) {
@@ -58,37 +58,37 @@ public class TableHasilPemilu extends javax.swing.JTable {
             };
 		this.minWidth = new int [] {0,0,0,120,300,120};
 		this.maxWidth = new int [] {0,0,0,120,400,120};
-		
+
 		this.model = new DefaultTableModel(new Object[][]{}, this.header);
-		
+
 		this.setModel(this.model);
 
 		this.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		
+
 		for (int i = 0; i < this.getColumnCount(); i++) {
 			TableColumn tc = this.getColumnModel().getColumn(i);
 
 			tc.setMinWidth(this.minWidth[i]);
 			tc.setMaxWidth(this.maxWidth[i]);
 		}
-		
+
 		this.populateTable(rs);
-		
+
 		Action action = new AbstractAction()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				TableCellListener tcl = (TableCellListener)e.getSource();
-				
+
 				DefaultTableModel dtm = (DefaultTableModel) tcl.getTable().getModel ();
-				
+
 				int r = tcl.getRow();
 				int c = tcl.getColumn();
-				
+
 				Integer type		= (Integer) dtm.getValueAt(r, 0);
-				Integer caleg_id	= (Integer) dtm.getValueAt(r, 1);
-				Integer partai_id	= (Integer) dtm.getValueAt(r, 2);
+				Integer caleg_id	= Integer.valueOf ((String) dtm.getValueAt(r, 1));
+				Integer partai_id	= Integer.valueOf ((String) dtm.getValueAt(r, 2));
 				Integer hasil		= (Integer) dtm.getValueAt(r, c);
 
 				QuickCount qc = QuickCount.getInstance();
@@ -99,19 +99,19 @@ public class TableHasilPemilu extends javax.swing.JTable {
 
 		TableCellListener tcl = new TableCellListener(this, action);
 	}
-	
+
 	@Override
 	public Class getColumnClass (int colidx)
 	{
 		return this.types[colidx];
 	}
-	
+
 	@Override
 	public boolean isCellEditable (int r, int c)
 	{
 		return canEdit [c];
 	}
-	
+
 	private void populateTable (ResultSet rs)
 	{
 		try {
@@ -121,7 +121,7 @@ public class TableHasilPemilu extends javax.swing.JTable {
 				for (int i = 1; i <= this.getColumnCount(); i++) {
 					v.add (rs.getObject(i));
 				}
-				
+
 				this.model.addRow(v);
 			}
 		} catch (SQLException ex) {

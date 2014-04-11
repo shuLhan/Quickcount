@@ -266,7 +266,7 @@ public class WinHasilPemilu extends javax.swing.JFrame {
 
 				PreparedStatement	ps = dbm._con.prepareStatement(
 						" select	2		as dprd"
-					+	" ,			id"
+					+	" ,			id		as caleg_id"
 					+	" ,			caleg_dprd.partai_id"
 					+	" ,			no_urut"
 					+	" ,			nama"

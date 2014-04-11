@@ -120,16 +120,12 @@ public class QuickCount {
 			Logger.getLogger(QuickCount.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
-//		if (os.startsWith("Windows")) {
-//			path = "C:/quickcount/";
-//		}
-
 		DatabaseManager dbm = DatabaseManager.getInstance();
 
-		exportHasil (dbm, path, "hasil_dpr", "DPR");
-		exportHasil (dbm, path, "hasil_dprd", "DPRD");
-		exportRekap (dbm, path, "rekap_suara_dpr", "DPR");
-		exportRekap (dbm, path, "rekap_suara_dprd" , "DPRD");
+		exportHasil (dbm, path +"/DPR/", "hasil_dpr", "DPR");
+		exportHasil (dbm, path +"/DPRD/", "hasil_dprd", "DPRD");
+		exportRekap (dbm, path +"/REKAP_DPR/", "rekap_suara_dpr", "DPR");
+		exportRekap (dbm, path +"/REKAP_DPRD/", "rekap_suara_dprd" , "DPRD");
 	}
 
 	private void exportHasil (
@@ -138,12 +134,14 @@ public class QuickCount {
 			, String table
 			, String label)
 	{
-		File csv = new File (dir + qc.dapil_id
+		new File (dir).mkdirs ();
+
+		File csv = new File (dir + label
+							+"_"+ qc.dapil_id
 							+"_"+ qc.kecamatan_id
 							+"_"+ qc.kelurahan_id
 							+"_"+ qc.tps_id
 							+"_"+ qc.kode_saksi
-							+"_"+ label
 							+".csv" );
 
 		FileWriter		fw = null;
@@ -167,6 +165,7 @@ public class QuickCount {
 		+	" ,			partai_id"
 		+	" ,			hasil"
 		+	" from "+ table
+		+	" where		kode_saksi = '"+ qc.kode_saksi +"'"
 		);
 
 		dbm.executePrepare();
@@ -198,15 +197,17 @@ public class QuickCount {
 	private void exportRekap(DatabaseManager dbm
 			, String dir
 			, String table
-			, String label) {
+			, String label)
+	{
+		new File (dir).mkdirs ();
+
 		File csv = new File (dir
-							+"REKAP"
+							+"REKAP_"+ label
 							+"_"+ qc.dapil_id
 							+"_"+ qc.kecamatan_id
 							+"_"+ qc.kelurahan_id
 							+"_"+ qc.tps_id
 							+"_"+ qc.kode_saksi
-							+"_"+ label
 							+".csv" );
 
 		FileWriter		fw = null;
@@ -232,6 +233,7 @@ public class QuickCount {
 		+	" ,			sah"
 		+	" ,			tidak_sah"
 		+	" from "+ table
+		+	" where		kode_saksi = '"+ qc.kode_saksi +"'"
 		);
 
 		dbm.executePrepare();
