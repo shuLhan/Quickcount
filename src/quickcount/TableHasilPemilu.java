@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -36,7 +37,7 @@ public class TableHasilPemilu extends javax.swing.JTable {
 				"type"
 			,	"caleg_id"
 			,	"partai_id"
-			,	"No Urut"
+			,	"No. Urut"
 			,	"Nama Caleg"
 			,	"Jumlah Suara"
 			};
@@ -79,16 +80,17 @@ public class TableHasilPemilu extends javax.swing.JTable {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				TableCellListener tcl = (TableCellListener)e.getSource();
+				TableCellListener tcl = (TableCellListener) e.getSource();
 
+				JTable				t = tcl.getTable ();
 				DefaultTableModel dtm = (DefaultTableModel) tcl.getTable().getModel ();
 
 				int r = tcl.getRow();
 				int c = tcl.getColumn();
 
 				Integer type		= (Integer) dtm.getValueAt(r, 0);
-				Integer caleg_id	= Integer.valueOf ((String) dtm.getValueAt(r, 1));
-				Integer partai_id	= Integer.valueOf ((String) dtm.getValueAt(r, 2));
+				Integer caleg_id	= (Integer) dtm.getValueAt(r, 1);
+				Integer partai_id	= (Integer) dtm.getValueAt(r, 2);
 				Integer hasil		= (Integer) dtm.getValueAt(r, c);
 
 				QuickCount qc = QuickCount.getInstance();
@@ -119,7 +121,18 @@ public class TableHasilPemilu extends javax.swing.JTable {
 				Vector v = new Vector ();
 
 				for (int i = 1; i <= this.getColumnCount(); i++) {
-					v.add (rs.getObject(i));
+					switch (i) {
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 6:
+						v.add (rs.getInt (i));
+						break;
+					case 5:
+						v.add (rs.getString (i));
+						break;
+					}
 				}
 
 				this.model.addRow(v);
@@ -127,5 +140,13 @@ public class TableHasilPemilu extends javax.swing.JTable {
 		} catch (SQLException ex) {
 			Logger.getLogger(TableHasilPemilu.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	@Override
+	public void changeSelection(final int row, final int column, boolean toggle, boolean extend)
+	{
+		super.changeSelection(row, column, toggle, extend);
+		this.editCellAt(row, 5);
+		this.transferFocus();
 	}
 }
